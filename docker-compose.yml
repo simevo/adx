@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+
+  server1:
+    restart: unless-stopped
+    environment:
+      ADX_REPO_PATH: '/app/.adx-alice'
+      DID_NETWORK_URL: http://server1:2583/did-network
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: adx_server
+
+  server2:
+    restart: unless-stopped
+    environment:
+      ADX_REPO_PATH: '/app/.adx-bob'
+      DID_NETWORK_URL: http://server1:2583/did-network
+      PORT: 2584
+    image: adx_server

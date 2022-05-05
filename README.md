@@ -128,6 +128,67 @@ The number in parantheses tells you which terminal to run each command in. From 
 (3/4) yarn cli destroy # deletes user repo & keypair
 ```
 
+## Containerized mode
+_Requires only docker-compose_
+
+Want to jump right in? Follow these steps to get a sample two server network up and running.
+
+This demo takes two terminal windows: 
+- one where the two servers run
+- one to issue the cli commands
+
+**⚠️ Please note, the server stores data in-memory. If you shutdown and restart a server, your account and related data will be deleted.**
+
+```bash
+# start services
+docker-compose up
+
+# now open the second terminal and:
+
+# register alice
+docker-compose exec server1 yarn cli init
+# prompt with 'alice' for username, 'server1:2583' for host, true for registration & false for delegator client
+
+# register bob
+docker-compose exec server2 yarn cli init
+# prompt with 'bob' for username, 'server2:2584' for host, true for registration & false for delegator client
+
+# make a couple posts as alice
+docker-compose exec server1 yarn cli post "hello world"
+docker-compose exec server1 yarn cli post "howdy"
+
+# follow alice as bob
+docker-compose exec server2 yarn cli follow alice@server1:2583
+
+# like alice's post
+docker-compose exec server2 yarn cli like alice@server1:2583 {post_id from alice post} # the post id has the format `3iwc-gvs-ehpk-2s`
+
+# view your timeline
+docker-compose exec server1 yarn cli timeline
+docker-compose exec server2 yarn cli timeline
+
+# list your follows
+docker-compose exec server1 yarn cli list follows
+docker-compose exec server2 yarn cli list follows
+
+# list your followers
+docker-compose exec server1 yarn cli list followers
+docker-compose exec server2 yarn cli list followers
+
+# list your feed
+docker-compose exec server1 yarn cli feed
+docker-compose exec server2 yarn cli feed
+
+# view alice's feed as bob
+docker-compose exec server2 yarn cli feed alice@server1:2583
+
+# Keep playing around. Try unliking, deleting or editing posts, or add a third user into the mix! They can be registered to one of the existing servers
+
+# Remember, the servers are running in-memory, if you restart a server and want to restart your CLI as well, run
+docker-compose exec server1 yarn cli destroy # deletes user repo & keypair
+docker-compose exec server2 yarn cli destroy # deletes user repo & keypair
+```
+
 ## 🗒️ Documentation
 We have not put together detailed coumentation for the server API or the SDK because the APIs are expected to change soon.
 
